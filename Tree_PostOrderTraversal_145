@@ -1,0 +1,58 @@
+/*************************************************************************************************************************************
+ * Problem: https://leetcode.com/problems/binary-tree-postorder-traversal/description/
+ * Solution: 
+ * Both recursive and iterative ways are provided below. 
+ *************************************************************************************************************************************/
+ 
+ /**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    private List<Integer> list = new ArrayList<>();
+    public List<Integer> postorderTraversal_Recursive(TreeNode root) {
+        postRecursive(root);
+        return this.list;
+    }
+    private void postRecursive(TreeNode node){
+        if(node==null){
+            return;
+        }
+        postRecursive(node.left);
+        postRecursive(node.right);
+        // Visite node
+        list.add(node.val);
+    }
+    
+    public List<Integer> postorderTraversal_Iterative(TreeNode root) {
+         List<Integer> list = new ArrayList<>();
+         Stack<TreeNode> stack = new Stack<>();
+         TreeNode curr = root;
+         TreeNode preVisited = null;
+         while(!stack.isEmpty() || curr != null){
+             if(curr != null){
+                 stack.push(curr);
+                 curr = curr.left;
+             }else{
+                 // First time cannot visit root, shall visit right sub-tree first if possible. 
+                 TreeNode node = stack.peek();
+                 // if has right children and hasn't been visited 
+                 if(node.right !=null && preVisited != node.right){
+                     // Traverse right sub-tree
+                     curr = node.right;
+                 }else{
+                     // Visite node, "curr" still stay at NULL (that's why we come to this branch)
+                     stack.pop();
+                     list.add(node.val);
+                     preVisited = node;
+                 }
+             }
+         }
+           return list;
+       }
+}
