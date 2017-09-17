@@ -1,2 +1,2 @@
 # Leetcode_Java
-Title: Category_Problem #_Title
+Title Format: Category_ProblemDescription_Leetcode#
