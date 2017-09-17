@@ -1,0 +1,71 @@
+/*************************************************************************************************************************************
+ * Problem: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
+ * Solution: 
+ * Below code uses preOrder traversal. Nothing fancy, serialization is a normal preOrder traversal + turn list into a String.
+ * Remember to add null nodes to your list, and use StringBuilder or StringJoiner to concatenate String. 
+ * Deserialization uses a shared variable index to record which nodes have been consumed previously for building root/left trees. 
+ *************************************************************************************************************************************/
+ /* Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+ 
+ public class Codec {
+    private List<String> serializeList = new ArrayList<>();
+    private List<String> deseList = new ArrayList<>();
+    private int index = 0;
+    
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        preOrder(root);
+        StringBuilder str = new StringBuilder();
+        for(String s : serializeList){
+            str.append(s+",");
+        }
+        return str.toString().substring(0, str.length() - 1);
+    }
+    
+    private void preOrder(TreeNode node){
+        if(node==null){
+            serializeList.add("N");
+        }else{
+            serializeList.add(Integer.toString(node.val));
+            preOrder(node.left);
+            preOrder(node.right);      
+        }
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.length() == 0){
+            return null;
+        }
+        this.deseList = Arrays.asList(data.split(","));
+        this.index=0;
+        return deserialization();
+    }
+    
+    private TreeNode deserialization(){
+        // Consumed one node. 
+        String element = this.deseList.get(index);
+        this.index++;
+        if(element.equals("N")){
+            return null;
+        }else{
+            TreeNode root = new TreeNode(Integer.parseInt(element));
+            root.left = deserialization();
+            root.right = deserialization();
+            return root; 
+        }
+        
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.deserialize(codec.serialize(root));
+ 
