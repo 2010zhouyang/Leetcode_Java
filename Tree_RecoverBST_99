@@ -1,0 +1,53 @@
+/*************************************************************************************************************************************
+ * Problem: https://leetcode.com/problems/recover-binary-search-tree/description/
+ * Solution: 
+ * This is the same as recover a sorted list(inorder traversal). Two scenarios:
+ * 1: Swap 2 consecutive elements: 1, 2, 4, 3, 5, 6
+ * 2: Swap 2 non-consecutive elements: 1, 2, 6, 4, 5, 3
+ * One tricky point: when a reverse order pair be found, which numbers shall be stored in "first" and "sec"?
+ *************************************************************************************************************************************/
+ /**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    private TreeNode pre = null;
+    private TreeNode first = null;
+    private TreeNode sec= null;
+    
+    public void recoverTree(TreeNode root) {
+        inOrder(root);
+        // Now both first and second nodes have been found. Swap the value.
+        int tmp = this.first.val;
+        first.val = this.sec.val;
+        this.sec.val = tmp;
+    }
+    
+    private void inOrder(TreeNode node){
+        if(node==null){
+            return;
+        }
+        inOrder(node.left);
+        // Visite current node
+        if(pre!=null){
+            if(node.val<pre.val){
+                if(first==null){
+                    // Found the first number
+                    sec = node;
+                    first = pre;
+                }else{
+                    // Found the second number
+                    sec = node;
+                    return;
+                }
+            }
+        }
+        pre = node;
+        inOrder(node.right);
+    }
+}
