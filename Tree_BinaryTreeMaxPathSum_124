@@ -1,0 +1,40 @@
+/*************************************************************************************************************************************
+ * Problem: https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
+ * Solution: 
+ * A Path! Not a Graph or Tree!
+ * Recursively call helper() to get sum from left OR right sub tree. All scenarios: 
+ * 1. Max sum may be found at current node: curr.val + leftSum + rightSum. Curr node has the highest level in this path.
+ * 2. Pass current path upwards: select the maximum from 4 possible values: 
+ *    a) curr node only: when left and right both are negative.
+ *    b) curr node + leftSum or curr node  + rightSum: cannot add both, which is a scenario disccues in #1.
+ *    c) 0: Yes, 0 is a valid number since we can select nothing!
+ *************************************************************************************************************************************/
+ /**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int max = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        helper(root);
+        return max;
+    }
+    
+    private int helper(TreeNode root){
+        if(root==null){
+            return 0;
+        }
+        int leftSum = helper(root.left);
+        int rightSum = helper(root.right);
+        // Option 1: current node as the root of path, which means this path is done here, won't go to parent nodes.
+        int currSum = leftSum + rightSum + root.val;
+        max = max > currSum ? max : currSum;
+        // Option 2: pass current path upward. Select a max value from: current node only, left+curr, right+curr, 0.
+        return Math.max(0, Math.max(root.val, Math.max(root.val+leftSum, root.val+rightSum)));
+    }
+}
