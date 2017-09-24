@@ -1,0 +1,51 @@
+/*************************************************************************************************************************************
+ * Problem: https://leetcode.com/problems/top-k-frequent-elements/description/
+ * Solution: 
+ * Use a map to count how many times a num occurs
+ * Use a max-heap to store count-num tuple, pop K times to get result list
+ * Note: write a cmp method to convert Java PriorityQueue to max-heap. 
+ *************************************************************************************************************************************/
+ 
+ class Solution {
+    class CountNumPair{
+	        private int count;
+	        private int num;
+	        
+	        CountNumPair(int count, int num){
+	            this.count = count;
+	            this.num = num;
+	        }
+	    }
+	    public  List<Integer> topKFrequent(int[] nums, int k) {
+	        Map<Integer, Integer> num2Count = new HashMap<>();
+	        for(int i : nums){
+	            if(num2Count.containsKey(i)){
+	                num2Count.put(i, num2Count.get(i)+1);
+	            }else{
+	                num2Count.put(i,1);
+	            }
+	        }
+            
+	        // Redefine cmp method
+            Comparator<CountNumPair> cmp = new Comparator<CountNumPair>(){
+                @Override
+                public int compare(CountNumPair t1, CountNumPair t2){
+                    return t2.count - t1.count;
+                }
+            };
+            
+	        // Store in max heap
+	        PriorityQueue<CountNumPair> maxHeap = new PriorityQueue<>(cmp);
+	        for(int i : num2Count.keySet()){
+	            CountNumPair count2Num = new CountNumPair(num2Count.get(i), i);
+	            maxHeap.offer(count2Num);
+	        }
+	        
+	        //Get top K
+	        List<Integer> topK = new ArrayList<>();
+	        for(int i=0; i<k; i++){
+	            topK.add(maxHeap.poll().num);
+	        }
+	        return topK;
+	}
+}
